@@ -1,0 +1,174 @@
+{
+  "extends": ["config:recommended", ":semanticCommits", ":semanticCommitTypeAll(chore)"],
+  "baseBranchPatterns": ["main"],
+  "dependencyDashboard": false,
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0,
+  "rangeStrategy": "pin",
+  "rebaseWhen": "conflicted",
+  "autoApprove": true,
+  "automerge": true,
+  "automergeStrategy": "squash",
+  "separateMajorMinor": true,
+  "separateMinorPatch": true,
+  "separateMultipleMajor": true,
+  "forkProcessing": "disabled",
+  "ignoreDeprecated": false,
+  "configMigration": true,
+  "semanticCommitScope": "{{#if (equals packageFileDir '')}}root{{else}}{{{packageFileDir}}}{{/if}}",
+  "additionalBranchPrefix": "{{#if (equals packageFileDir '')}}root{{else}}{{{packageFileDir}}}{{/if}}/",
+  "branchTopic": "{{{depNameSanitized}}}-{{{newMajor}}}.{{{newMinor}}}.x",
+  "vulnerabilityAlerts": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchFileNames": ["libs/ng-mocks/package.json"],
+      "enabled": false
+    },
+    {
+      "matchPackageNames": ["ng-mocks"],
+      "enabled": false
+    },
+    {
+      "matchPackageNames": ["satantime/puppeteer-node", "@types/node", "nodejs/node"],
+      "allowedVersions": "/^[^0-9]*\\d*[02468]\\./",
+      "branchTopic": "node-{{{newMajor}}}{{#if separateMinorPatch}}{{#if isPatch}}.{{{newMinor}}}{{/if}}{{/if}}.x{{#if isLockfileUpdate}}-lockfile{{/if}}"
+    },
+    {
+      "matchPackageNames": ["@types/jest", "jest", "ts-jest", "jest-environment-jsdom"],
+      "branchTopic": "jest-{{{newMajor}}}{{#if separateMinorPatch}}{{#if isPatch}}.{{{newMinor}}}{{/if}}{{/if}}.x{{#if isLockfileUpdate}}-lockfile{{/if}}"
+    },
+    {
+      "matchPackageNames": ["@types/jasmine", "jasmine-core"],
+      "branchTopic": "jasmine-{{{newMajor}}}{{#if separateMinorPatch}}{{#if isPatch}}.{{{newMinor}}}{{/if}}{{/if}}.x{{#if isLockfileUpdate}}-lockfile{{/if}}"
+    },
+    {
+      "matchFileNames": [".circleci/config.yml"],
+      "semanticCommitScope": "root",
+      "additionalBranchPrefix": "root/"
+    },
+    {
+      "matchFileNames": ["tests-e2e/**"],
+      "semanticCommitScope": "root",
+      "additionalBranchPrefix": "root/"
+    },
+    {
+      "matchFileNames": ["e2e/a5es5/*", "e2e/a5es2015/*"],
+      "semanticCommitScope": "e2e/a5",
+      "additionalBranchPrefix": "e2e/a5/"
+    },
+    {
+      "matchFileNames": [".circleci/config.yml", "compose.yml"],
+      "matchPackageNames": ["satantime/puppeteer-node", "@types/node", "nodejs/node", "npm"],
+      "major": {
+        "enabled": false
+      }
+    },
+    {
+      "matchFileNames": ["e2e/a*/**"],
+      "major": {
+        "enabled": false
+      }
+    },
+    {
+      "matchFileNames": ["e2e/a*/**"],
+      "matchPackageNames": [
+        "@types/jasmine",
+        "core-js",
+        "jasmine-core",
+        "karma",
+        "karma-chrome-launcher",
+        "karma-coverage",
+        "karma-jasmine",
+        "karma-jasmine-html-reporter",
+        "rxjs",
+        "typescript",
+        "zone.js"
+      ],
+      "minor": {
+        "enabled": false
+      }
+    },
+    {
+      "matchFileNames": ["e2e/a5es5/*", "e2e/a5es2015/*"],
+      "matchPackageNames": ["@types/jasmine", "jasmine-core"],
+      "allowedVersions": "<2.8.10"
+    },
+    {
+      "matchFileNames": ["e2e/a5es5/*", "e2e/a5es2015/*"],
+      "matchPackageNames": ["satantime/puppeteer-node", "nodejs/node"],
+      "allowedVersions": "<9.0.0"
+    },
+    {
+      "matchFileNames": ["e2e/a5es5/*", "e2e/a5es2015/*"],
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "<8.10.63"
+    },
+    {
+      "matchFileNames": ["e2e/a6/*"],
+      "matchPackageNames": ["@types/jasmine"],
+      "allowedVersions": "<2.8.23"
+    },
+    {
+      "matchFileNames": ["e2e/a6/*"],
+      "matchPackageNames": ["@angular-devkit/build-angular"],
+      "allowedVersions": "/^0\\.8\\./"
+    },
+    {
+      "matchFileNames": ["e2e/a6/*"],
+      "matchPackageNames": ["satantime/puppeteer-node", "@types/node", "nodejs/node"],
+      "allowedVersions": "<8.10.0"
+    },
+    {
+      "matchFileNames": ["e2e/a7/*"],
+      "matchPackageNames": ["@types/jasmine"],
+      "allowedVersions": "<2.8.23"
+    },
+    {
+      "matchFileNames": ["e2e/a7/*"],
+      "matchPackageNames": ["@angular-devkit/build-angular"],
+      "allowedVersions": "/^0\\.13\\./"
+    },
+    {
+      "matchFileNames": ["e2e/a8/*"],
+      "matchPackageNames": ["@angular-devkit/build-angular"],
+      "allowedVersions": "/^0\\.8\\d\\d\\./"
+    },
+    {
+      "matchFileNames": ["e2e/a8/*"],
+      "matchPackageNames": ["jest-preset-angular"],
+      "allowedVersions": "<8.3.0"
+    },
+    {
+      "matchFileNames": ["e2e/a9/*"],
+      "matchPackageNames": ["@angular-devkit/build-angular"],
+      "allowedVersions": "/^0\\.9\\d\\d\\./"
+    },
+    {
+      "matchFileNames": ["e2e/a9/*"],
+      "matchPackageNames": ["jest-preset-angular"],
+      "allowedVersions": "<8.3.0"
+    },
+    {
+      "matchFileNames": ["e2e/a10/*"],
+      "matchPackageNames": ["@angular-devkit/build-angular"],
+      "allowedVersions": "/^0\\.10\\d\\d\\./"
+    },
+    {
+      "matchFileNames": ["e2e/a11/*"],
+      "matchPackageNames": ["@angular-devkit/build-angular"],
+      "allowedVersions": "/^0\\.11\\d\\d\\./"
+    },
+    {
+      "matchFileNames": ["e2e/a14/*"],
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "<16.18.109"
+    },
+    {
+      "matchFileNames": ["e2e/a14/*"],
+      "matchPackageNames": ["ng-packagr"],
+      "allowedVersions": "<14.3.0"
+    }
+  ]
+}

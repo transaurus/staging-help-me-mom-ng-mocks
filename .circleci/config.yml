@@ -1,0 +1,764 @@
+version: 2.1
+
+parameters:
+  lockindex:
+    type: string
+    default: '1'
+
+orbs:
+  windows: circleci/windows@5.1.1
+
+executors:
+  core:
+    docker:
+      - image: satantime/puppeteer-node:24.14.0
+    resource_class: medium
+  a5:
+    docker:
+      - image: satantime/puppeteer-node:8.17.0
+    resource_class: medium
+  a6:
+    docker:
+      - image: satantime/puppeteer-node:8.17.0
+    resource_class: medium
+  a7:
+    docker:
+      - image: satantime/puppeteer-node:8.17.0
+    resource_class: medium
+  a8:
+    docker:
+      - image: satantime/puppeteer-node:10.24.1
+    resource_class: medium
+  a9:
+    docker:
+      - image: satantime/puppeteer-node:12.22.12
+    resource_class: medium
+  a10:
+    docker:
+      - image: satantime/puppeteer-node:12.22.12
+    resource_class: medium
+  a11:
+    docker:
+      - image: satantime/puppeteer-node:12.22.12
+    resource_class: medium
+  a12:
+    docker:
+      - image: satantime/puppeteer-node:12.22.12
+    resource_class: medium
+  a13:
+    docker:
+      - image: satantime/puppeteer-node:12.22.12
+    resource_class: medium
+  a14:
+    docker:
+      - image: satantime/puppeteer-node:16.20.2
+    resource_class: medium
+  a15:
+    docker:
+      - image: satantime/puppeteer-node:16.20.2
+    resource_class: medium
+  a16:
+    docker:
+      - image: satantime/puppeteer-node:18.20.8
+    resource_class: medium
+  a17:
+    docker:
+      - image: satantime/puppeteer-node:20.20.1
+    resource_class: medium
+  a18:
+    docker:
+      - image: satantime/puppeteer-node:20.20.1
+    resource_class: medium
+  a19:
+    docker:
+      - image: satantime/puppeteer-node:22.22.1
+    resource_class: medium
+  a20:
+    docker:
+      - image: satantime/puppeteer-node:22.22.1
+    resource_class: medium
+  a21:
+    docker:
+      - image: satantime/puppeteer-node:24.14.0
+    resource_class: medium
+  a22:
+    docker:
+      - image: satantime/puppeteer-node:24.14.0
+    resource_class: medium
+
+commands:
+  install:
+    parameters:
+      dir:
+        description: Directory in /e2e/
+        type: string
+    steps:
+      - checkout
+      - restore_cache:
+          key: << parameters.dir >>-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "e2e/<< parameters.dir >>/package.json" }}-{{ checksum "e2e/<< parameters.dir >>/package-lock.json" }}
+      - run:
+          name: NPM Install
+          command: |
+            md5sum e2e/<< parameters.dir >>/package-lock.json > package.md5
+            if [ ! -d "e2e/<< parameters.dir >>/node_modules/" ]; then
+              npm run i:ci:<< parameters.dir >>
+            fi
+            md5sum -c package.md5
+            rm package.md5
+      - save_cache:
+          key: << parameters.dir >>-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "e2e/<< parameters.dir >>/package.json" }}-{{ checksum "e2e/<< parameters.dir >>/package-lock.json" }}
+          paths:
+            - ./e2e/<< parameters.dir >>/node_modules
+            - ~/.cache/puppeteer
+  test:
+    parameters:
+      dir:
+        description: Directory in /e2e/
+        type: string
+      es:
+        description: ES Version
+        type: string
+        default: ''
+      engine:
+        description: Angular View Engine
+        type: enum
+        enum:
+          - ''
+          - ivy
+        default: ''
+    steps:
+      - checkout
+      - attach_workspace:
+          at: dist
+      - restore_cache:
+          key: << parameters.dir >>-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "e2e/<< parameters.dir >>/package.json" }}-{{ checksum "e2e/<< parameters.dir >>/package-lock.json" }}
+      - run:
+          name: Spreading Build
+          command: npm run s:<< parameters.dir >>
+      - run:
+          name: Spreading Files
+          command: npm run s:files:<< parameters.dir >>
+      - run:
+          name: Unit Tests
+          command: npm run test:<< parameters.dir >><< parameters.es >><< parameters.engine >>
+  lib:
+    parameters:
+      dir:
+        description: Directory in /e2e/
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: dist
+      - restore_cache:
+          key: << parameters.dir >>-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "e2e/<< parameters.dir >>/package.json" }}-{{ checksum "e2e/<< parameters.dir >>/package-lock.json" }}
+      - run:
+          name: Spreading Build
+          command: npm run s:<< parameters.dir >>
+      - run:
+          name: Spreading Files
+          command: npm run s:files:<< parameters.dir >>
+      - run:
+          name: Building Lib
+          command: npm run lib:<< parameters.dir >>
+
+jobs:
+  Core:
+    executor: core
+    steps:
+      - checkout
+      - restore_cache:
+          key: root-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: NPM Install
+          command: |
+            md5sum package-lock.json > package.md5
+            if [ ! -d "./node_modules/" ]; then
+              npm ci
+            fi
+            md5sum -c package.md5
+            rm package.md5
+      - save_cache:
+          key: root-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+            - ~/.cache/puppeteer
+      - run:
+          name: Prettier
+          command: npm run prettier:check
+      - run:
+          name: Lint commits
+          command: npx commitlint -V --from=origin/main
+      - run:
+          name: Lint code style
+          command: npm run lint -- --ignore-pattern e2e/ --ignore-pattern tests-e2e/
+      - run:
+          name: Lint typescript
+          command: npm run ts:check
+      - run:
+          name: Build
+          command: |
+            npm run build
+            cd ./dist/libs/ng-mocks
+            npm pack
+            cd ..
+            mv ./ng-mocks/ng-mocks-0.0.0.tgz ./
+            rm -Rf ./ng-mocks
+            tar -xf ./ng-mocks-0.0.0.tgz package
+            rm ./ng-mocks-0.0.0.tgz
+            mv ./package ./ng-mocks
+      - run:
+          name: Unit Tests
+          command: WITH_COVERAGE=1 npm run test
+      - run:
+          name: Release
+          command: npx semantic-release -h
+      - store_test_results:
+          path: ./test-reports
+      - store_artifacts:
+          path: ./test-reports/coverage
+          prefix: coverage
+      - persist_to_workspace:
+          root: dist
+          paths:
+            - .
+      # TODO fix this one day
+      #      - run:
+      #          name: Collecting https://coveralls.io/github/help-me-mom/ng-mocks
+      #          command: ./node_modules/.bin/coveralls < test-reports/coverage/lcov.info
+      - run:
+          name: Collecting https://codecov.io/gh/help-me-mom/ng-mocks
+          command: ./node_modules/.bin/codecov -f test-reports/coverage/lcov.info --disable=gcov
+  E2E:
+    executor: core
+    steps:
+      - run: date
+      - when:
+          condition:
+            not:
+              or:
+                - matches:
+                    pattern: '(renovate|dependabot/npm_and_yarn)/(e2e|docs)/.*'
+                    value: << pipeline.git.branch >>
+                - matches:
+                    pattern: 'e2e/.*'
+                    value: << pipeline.git.branch >>
+          steps:
+            - checkout
+            - attach_workspace:
+                at: dist
+            - restore_cache:
+                key: tests-e2e-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "tests-e2e/package.json" }}-{{ checksum "tests-e2e/package-lock.json" }}
+            - run:
+                name: NPM Install
+                command: |
+                  md5sum tests-e2e/package-lock.json > package.md5
+                  if [ ! -d "./tests-e2e/node_modules/" ]; then
+                    npm run i:tests-e2e
+                  fi
+                  md5sum -c package.md5
+                  rm package.md5
+            - save_cache:
+                key: tests-e2e-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "tests-e2e/package.json" }}-{{ checksum "tests-e2e/package-lock.json" }}
+                paths:
+                  - ./tests-e2e/node_modules
+                  - ~/.cache/puppeteer
+            - run:
+                name: Spreading Build
+                command: npm run s:tests-e2e
+            - run:
+                name: E2E
+                command: npm run e2e
+  Docs:
+    executor: core
+    steps:
+      - run: date
+      - when:
+          condition:
+            not:
+              or:
+                - matches:
+                    pattern: '(renovate|dependabot/npm_and_yarn)/(tests-e2e|e2e|root)/.*'
+                    value: << pipeline.git.branch >>
+                - matches:
+                    pattern: 'e2e/.*'
+                    value: << pipeline.git.branch >>
+          steps:
+            - checkout
+            - restore_cache:
+                key: docs-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "docs/package.json" }}-{{ checksum "docs/package-lock.json" }}
+            - run:
+                name: NPM Install
+                command: |
+                  md5sum docs/package-lock.json > package.md5
+                  if [ ! -d "./docs/node_modules/" ]; then
+                    npm run i:docs
+                  fi
+                  md5sum -c package.md5
+                  rm package.md5
+            - save_cache:
+                key: docs-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "docs/package.json" }}-{{ checksum "docs/package-lock.json" }}
+                paths:
+                  - ./docs/node_modules
+                  - ~/.cache/puppeteer
+            - run:
+                name: Docs
+                command: npm run build:docs
+  Performance:
+    executor: core
+    steps:
+      - run: date
+      - when:
+          condition:
+            not:
+              or:
+                - matches:
+                    pattern: '(renovate|dependabot/npm_and_yarn)/(tests-e2e|e2e|docs)/.*'
+                    value: << pipeline.git.branch >>
+                - matches:
+                    pattern: 'e2e/.*'
+                    value: << pipeline.git.branch >>
+          steps:
+            - checkout
+            - restore_cache:
+                key: root-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+            - run:
+                name: Default
+                command: KARMA_SUITE=tests-performance/test.spec.ts npm run test
+            - run:
+                name: TestBed
+                command: KARMA_SUITE=tests-performance/test-bed.spec.ts npm run test
+            - run:
+                name: MockBuilder
+                command: KARMA_SUITE=tests-performance/mock-builder.spec.ts npm run test
+            - run:
+                name: MockRender
+                command: KARMA_SUITE=tests-performance/mock-render.spec.ts npm run test
+  IE:
+    executor:
+      name: windows/server-2019
+      size: medium
+      shell: bash.exe
+    steps:
+      - run: date
+      - when:
+          condition:
+            or:
+              - not:
+                  or:
+                    - matches:
+                        pattern: '(renovate|dependabot/npm_and_yarn)/(tests-e2e|e2e|docs)/.*'
+                        value: << pipeline.git.branch >>
+                    - matches:
+                        pattern: 'e2e/.*'
+                        value: << pipeline.git.branch >>
+                    - matches:
+                        pattern: 'main|alpha|beta|next|rc'
+                        value: << pipeline.git.branch >>
+              - matches:
+                  pattern: 'renovate/e2e/a5/.*'
+                  value: << pipeline.git.branch >>
+              - matches:
+                  pattern: 'dependabot/npm_and_yarn/e2e/a5es5/.*'
+                  value: << pipeline.git.branch >>
+              - matches:
+                  pattern: 'e2e/a5/.*'
+                  value: << pipeline.git.branch >>
+          steps:
+            - checkout
+            - attach_workspace:
+                at: dist
+            - restore_cache:
+                key: a5es5-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "e2e/a5es5/package.json" }}-{{ checksum "e2e/a5es5/package-lock.json" }}
+            - run: nvm install $(cat e2e/a5es5/.nvmrc)
+            - run: nvm use $(cat e2e/a5es5/.nvmrc)
+            - run:
+                name: NPM Shell
+                command: npm config set script-shell bash.exe
+            - run:
+                name: NPM Install
+                command: |
+                  md5sum e2e/a5es5/package-lock.json > package.md5
+                  if [ ! -d "e2e/a5es5/node_modules/" ]; then
+                    npm run i:a5es5
+                  fi
+                  md5sum -c package.md5
+                  rm package.md5
+            - save_cache:
+                key: a5es5-<< pipeline.parameters.lockindex >>-{{ arch }}-{{ checksum "e2e/a5es5/package.json" }}-{{ checksum "e2e/a5es5/package-lock.json" }}
+                paths:
+                  - ./e2e/a5es5/node_modules
+                  - ~/.cache/puppeteer
+                  - /ProgramData/nvm/temp
+            - run:
+                name: Spreading Build
+                command: |
+                  P=e2e/a5es5/node_modules/ng-mocks
+                  rm -Rf $P
+                  mkdir -p $P
+                  cp -R dist/libs/ng-mocks/. $P
+            - run:
+                name: Spreading Tests
+                command: |
+                  P=e2e/a5es5/src/test
+                  rm -Rf $P
+                  mkdir -p $P
+                  cp -R tests $P
+                  cp -R examples $P
+                  rm $P/examples/TestRoutingGuard/test.spec.ts
+                  rm $P/examples/TestRoutingResolver/test.spec.ts
+                  rm $P/tests/issue-4282/test.spec.ts
+                  rm $P/tests/issue-4282/global.spec.ts
+                  rm $P/examples/TestRoutingGuard/can-*.spec.ts
+                  rm $P/examples/TestRoutingResolver/fn.spec.ts
+                  rm $P/tests/mock-service/observable.spec.ts
+            - run:
+                name: Unit Tests
+                command: |
+                  cd e2e/a5es5
+                  npm run test:jasmine
+    environment:
+      IE_BIN: 'C:\Program Files\Internet Explorer\iexplore.exe'
+  E2E Install:
+    parameters:
+      node:
+        type: executor
+        default: core
+      dir:
+        type: string
+      branch:
+        type: string
+    executor: << parameters.node >>
+    steps:
+      - run: date
+      - when:
+          condition:
+            or:
+              - not:
+                  or:
+                    - matches:
+                        pattern: '(renovate|dependabot/npm_and_yarn)/(tests-e2e|e2e|docs)/.*'
+                        value: << pipeline.git.branch >>
+                    - matches:
+                        pattern: 'e2e/.*'
+                        value: << pipeline.git.branch >>
+              - matches:
+                  pattern: '(renovate|dependabot/npm_and_yarn)/e2e/<< parameters.branch >>(es5|es2015)?/.*'
+                  value: << pipeline.git.branch >>
+              - matches:
+                  pattern: 'e2e/<< parameters.branch >>/.*'
+                  value: << pipeline.git.branch >>
+          steps:
+            - install:
+                dir: << parameters.dir >>
+  E2E Test:
+    parameters:
+      node:
+        type: executor
+        default: core
+      dir:
+        type: string
+      branch:
+        type: string
+      es:
+        type: enum
+        enum:
+          - ''
+          - es5
+          - es2015
+        default: ''
+      engine:
+        type: enum
+        enum:
+          - ''
+          - ivy
+        default: ''
+    executor: << parameters.node >>
+    steps:
+      - run: date
+      - when:
+          condition:
+            or:
+              - not:
+                  or:
+                    - matches:
+                        pattern: '(renovate|dependabot/npm_and_yarn)/(tests-e2e|e2e|docs)/.*'
+                        value: << pipeline.git.branch >>
+                    - matches:
+                        pattern: 'e2e/.*'
+                        value: << pipeline.git.branch >>
+              - matches:
+                  pattern: '(renovate|dependabot/npm_and_yarn)/e2e/<< parameters.branch >>(es5|es2015)?/.*'
+                  value: << pipeline.git.branch >>
+              - matches:
+                  pattern: 'e2e/<< parameters.branch >>/.*'
+                  value: << pipeline.git.branch >>
+          steps:
+            - test:
+                dir: << parameters.dir >>
+                es: << parameters.es >>
+                engine: << parameters.engine >>
+  Lib Build:
+    parameters:
+      node:
+        type: executor
+        default: core
+      dir:
+        type: string
+      branch:
+        type: string
+    executor: << parameters.node >>
+    steps:
+      - run: date
+      - when:
+          condition:
+            or:
+              - not:
+                  or:
+                    - matches:
+                        pattern: '(renovate|dependabot/npm_and_yarn)/(tests-e2e|e2e|docs)/.*'
+                        value: << pipeline.git.branch >>
+                    - matches:
+                        pattern: 'e2e/.*'
+                        value: << pipeline.git.branch >>
+              - matches:
+                  pattern: '(renovate|dependabot/npm_and_yarn)/e2e/<< parameters.branch >>(es5|es2015)?/.*'
+                  value: << pipeline.git.branch >>
+              - matches:
+                  pattern: 'e2e/<< parameters.branch >>/.*'
+                  value: << pipeline.git.branch >>
+          steps:
+            - lib:
+                dir: << parameters.dir >>
+
+workflows:
+  version: 2
+  Testing:
+    jobs:
+      - Core:
+          name: core
+          filters:
+            tags:
+              only: /.*/
+      - E2E:
+          name: core:e2e
+          requires:
+            - core
+      #      - IE:
+      #          name: core:ie
+      #          requires:
+      #            - core
+      #          filters:
+      #            branches:
+      #              ignore:
+      #                - main
+      #                - alpha
+      #                - beta
+      #                - next
+      #                - rc
+      #                - /(renovate|dependabot\/npm_and_yarn)\/(tests-e2e|docs)\/.*/
+      - Performance:
+          name: core:performance
+          requires:
+            - core
+      - Docs:
+          name: core:docs
+          requires:
+            - core
+
+      # installing latest
+      - E2E Install:
+          name: << matrix.dir >>:install
+          dir: << matrix.dir >>
+          branch: << matrix.dir >>
+          matrix:
+            parameters:
+              dir:
+                - jasmine
+                - jest
+                - min
+                - nx
+
+      # testing latest
+      - E2E Test:
+          name: << matrix.dir >>:test
+          dir: << matrix.dir >>
+          branch: << matrix.dir >>
+          requires:
+            - << matrix.dir >>:install
+            - core
+          matrix:
+            parameters:
+              dir:
+                - jasmine
+                - jest
+                - min
+                - nx
+
+      # installing a5 (exceptional)
+      - E2E Install:
+          name: << matrix.dir >>:install
+          node: a5
+          dir: << matrix.dir >>
+          branch: a5
+          matrix:
+            parameters:
+              dir:
+                - a5es5
+                - a5es2015
+
+      # installing e2e
+      - E2E Install:
+          name: << matrix.dir >>:install
+          node: << matrix.dir >>
+          dir: << matrix.dir >>
+          branch: << matrix.dir >>
+          matrix:
+            parameters:
+              dir:
+                - a6
+                - a7
+                - a8
+                - a9
+                - a10
+                - a11
+                - a12
+                - a13
+                - a14
+                - a15
+                - a16
+                - a17
+                - a18
+                - a19
+                - a20
+                - a21
+                - a22
+
+      # testing a5 (exceptional)
+      - E2E Test:
+          name: << matrix.dir >>:test
+          node: a5
+          dir: << matrix.dir >>
+          branch: a5
+          requires:
+            - << matrix.dir >>:install
+            - core
+          matrix:
+            parameters:
+              dir:
+                - a5es5
+                - a5es2015
+
+      # testing classic view engine
+      - E2E Test:
+          name: << matrix.dir >>:test:<< matrix.es >>
+          node: << matrix.dir >>
+          dir: << matrix.dir >>
+          branch: << matrix.dir >>
+          es: << matrix.es >>
+          requires:
+            - << matrix.dir >>:install
+            - core
+          matrix:
+            parameters:
+              dir:
+                - a6
+                - a7
+                - a8
+                - a9
+                - a10
+                - a11
+              es:
+                - es5
+                - es2015
+
+      # testing ivy view engine
+      - E2E Test:
+          name: << matrix.dir >>:test:<< matrix.es >>:ivy
+          node: << matrix.dir >>
+          dir: << matrix.dir >>
+          branch: << matrix.dir >>
+          es: << matrix.es >>
+          engine: ivy
+          requires:
+            - << matrix.dir >>:install
+            - core
+          matrix:
+            parameters:
+              dir:
+                - a9
+                - a10
+                - a11
+                - a12
+                - a13
+                - a14
+              es:
+                - es5
+                - es2015
+
+      # testing ivy view engine
+      - E2E Test:
+          name: << matrix.dir >>:test
+          node: << matrix.dir >>
+          dir: << matrix.dir >>
+          branch: << matrix.dir >>
+          requires:
+            - << matrix.dir >>:install
+            - core
+          matrix:
+            parameters:
+              dir:
+                - a15
+                - a16
+                - a17
+                - a18
+                - a19
+                - a20
+                - a21
+                - a22
+
+      # testing lib build
+      - Lib Build:
+          name: << matrix.dir >>:build
+          node: << matrix.dir >>
+          dir: << matrix.dir >>
+          branch: << matrix.dir >>
+          requires:
+            - << matrix.dir >>:install
+            - core
+          matrix:
+            parameters:
+              dir:
+                - a6
+                - a7
+                - a8
+                - a9
+                - a10
+                - a11
+                - a12
+                - a13
+                - a14
+                - a15
+                - a16
+                - a17
+                - a18
+                - a19
+                - a20
+                - a21
+                - a22
+
+      # testing lib build
+      - Lib Build:
+          name: << matrix.dir >>:build
+          dir: << matrix.dir >>
+          branch: << matrix.dir >>
+          requires:
+            - << matrix.dir >>:install
+            - core
+          matrix:
+            parameters:
+              dir:
+                - jasmine
+                - jest
+                - min
+                - nx

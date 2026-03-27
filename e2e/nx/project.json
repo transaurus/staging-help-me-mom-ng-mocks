@@ -1,0 +1,50 @@
+{
+  "name": "nx",
+  "$schema": "./node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "root": ".",
+  "sourceRoot": "src",
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:application",
+      "options": {
+        "outputPath": "dist/nx",
+        "index": "src/index.html",
+        "browser": "src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "tsconfig.json"
+      },
+      "configurations": {
+        "production": {
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "serve": {
+      "executor": "@nx/angular:dev-server",
+      "configurations": {
+        "production": {
+          "buildTarget": "nx:build:production"
+        },
+        "development": {
+          "buildTarget": "nx:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "jest.config.ts",
+        "passWithNoTests": true
+      },
+      "outputs": ["{workspaceRoot}/coverage/{projectName}"]
+    }
+  }
+}

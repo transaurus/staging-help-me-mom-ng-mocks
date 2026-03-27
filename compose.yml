@@ -1,0 +1,385 @@
+services:
+  ng-mocks:
+    image: satantime/puppeteer-node:24.14.0
+    platform: linux/amd64
+    working_dir: /app
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=8192
+    volumes:
+      - .:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  docs:
+    image: satantime/puppeteer-node:24.14.0
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./docs:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  e2e:
+    image: satantime/puppeteer-node:24.14.0
+    platform: linux/amd64
+    working_dir: /app
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=8192
+    volumes:
+      - ./tests-e2e:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  a5es5:
+    image: satantime/puppeteer-node:8.17.0
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a5es5:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+      - --no-optional
+
+  a5es2015:
+    image: satantime/puppeteer-node:8.17.0
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a5es2015:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+      - --no-optional
+
+  a6:
+    image: satantime/puppeteer-node:8.17.0
+    working_dir: /app
+    volumes:
+      - ./e2e/a6:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+      - --no-optional
+
+  a7:
+    image: satantime/puppeteer-node:8.17.0
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a7:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+      - --no-optional
+
+  a8:
+    image: satantime/puppeteer-node:10.24.1
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a8:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+      - --no-optional
+
+  a9:
+    image: satantime/puppeteer-node:12.22.12
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a9:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+      - --no-optional
+
+  a10:
+    image: satantime/puppeteer-node:12.22.12
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a10:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+      - --no-optional
+
+  a11:
+    image: satantime/puppeteer-node:12.22.12
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a11:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+      - --no-optional
+
+  a12:
+    image: satantime/puppeteer-node:12.22.12
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a12:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+      - --no-optional
+
+  a13:
+    image: satantime/puppeteer-node:12.22.12
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a13:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+      - --no-optional
+
+  a14:
+    image: satantime/puppeteer-node:16.20.2
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a14:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  a15:
+    image: satantime/puppeteer-node:16.20.2
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a15:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  a16:
+    image: satantime/puppeteer-node:18.20.8
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a16:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  a17:
+    image: satantime/puppeteer-node:20.20.1
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a17:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  a18:
+    image: satantime/puppeteer-node:20.20.1
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a18:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  a19:
+    image: satantime/puppeteer-node:22.22.1
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a19:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  a20:
+    image: satantime/puppeteer-node:22.22.1
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a20:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  a21:
+    image: satantime/puppeteer-node:24.14.0
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a21:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  a22:
+    image: satantime/puppeteer-node:24.14.0
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/a22:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  jasmine:
+    image: satantime/puppeteer-node:24.14.0
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/jasmine:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  jest:
+    image: satantime/puppeteer-node:24.14.0
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/jest:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  min:
+    image: satantime/puppeteer-node:24.14.0
+    platform: linux/amd64
+    working_dir: /app
+    volumes:
+      - ./e2e/min:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+  nx:
+    image: satantime/puppeteer-node:24.14.0
+    platform: linux/amd64
+    working_dir: /app
+    environment:
+      - NX_DAEMON=false
+      - NX_SKIP_NX_CACHE=true
+    volumes:
+      - ./e2e/nx:/app
+      - cache:/root/.cache
+      - gyp:/root/.node-gyp
+      - npm:/root/.npm
+    command:
+      - npm
+      - install
+      - --no-audit
+
+volumes:
+  cache:
+  gyp:
+  npm:

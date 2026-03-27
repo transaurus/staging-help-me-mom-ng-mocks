@@ -1,0 +1,31 @@
+{
+  "extends": "./libs/ng-mocks/tsconfig.json",
+  "compilerOptions": {
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "paths": {
+      "ng-mocks": ["./src/index.ts"]
+    },
+    "types": [
+      "jasmine",
+      "jest",
+      "karma-coverage-istanbul-reporter",
+      "karma-jasmine",
+      "karma-junit-reporter",
+      "karma-webpack",
+      "node"
+    ]
+  },
+  "files": ["libs/ng-mocks/src/index.ts", "empty.ts", "test.ts", "karma.conf.ts"],
+  "exclude": ["e2e", "node_modules"],
+  "include": [
+    "libs/ng-mocks/src/lib/**/*.ts",
+    "examples/**/*.ts",
+    "tests/**/*.ts",
+    "tests-failures/**/*.ts",
+    "tests-performance/**/*.ts"
+  ]
+}

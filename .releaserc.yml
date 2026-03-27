@@ -1,0 +1,39 @@
+repositoryUrl: git@github.com:help-me-mom/ng-mocks.git
+dryRun: true
+ci: false
+debug: true
+plugins:
+  - - '@semantic-release/commit-analyzer'
+    - releaseRules:
+        - type: docs
+          scope: README
+          release: patch
+  - - '@semantic-release/exec'
+    - prepareCmd: |
+        sh compose.sh root
+        docker compose run --rm ng-mocks npm run lint
+        docker compose run --rm ng-mocks npm run ts:check
+        docker compose run --rm ng-mocks npm run build
+  - '@semantic-release/release-notes-generator'
+  - - '@semantic-release/changelog'
+    - changelogFile: CHANGELOG.md
+  - - '@semantic-release/npm'
+    - pkgRoot: dist/libs/ng-mocks
+      tarballDir: tmp
+      npmPublish: false
+  - - '@semantic-release/github'
+    - assets:
+        - tmp/*.tgz
+      successComment: >-
+        [v${nextRelease.version}](https://github.com/help-me-mom/ng-mocks/releases/tag/v${nextRelease.version})
+        has been released and contains a fix for the issue.
+        Feel free to reopen the issue or to submit a new one if you meet any problems.
+      failTitle: false
+      failComment: false
+      labels: false
+      releasedLabels:
+        - released
+        - >-
+          v${nextRelease.version}
+  - - '@semantic-release/git'
+    - message: 'chore(release): v${nextRelease.version}'
