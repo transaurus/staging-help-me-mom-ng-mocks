@@ -1,0 +1,46 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.docs.category.Introduction": {
+    "message": "Introduction",
+    "description": "The label for category 'Introduction' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Classic tools": {
+    "message": "Classic tools",
+    "description": "The label for category 'Classic tools' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Contemporary tools": {
+    "message": "Contemporary tools",
+    "description": "The label for category 'Contemporary tools' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.ngMocks": {
+    "message": "ngMocks",
+    "description": "The label for category 'ngMocks' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Helper functions": {
+    "message": "Helper functions",
+    "description": "The label for category 'Helper functions' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Extra": {
+    "message": "Extra",
+    "description": "The label for category 'Extra' in sidebar 'docs'"
+  },
+  "sidebar.docs.category.Troubleshooting": {
+    "message": "Troubleshooting",
+    "description": "The label for category 'Troubleshooting' in sidebar 'docs'"
+  },
+  "sidebar.guides.category.How to test": {
+    "message": "How to test",
+    "description": "The label for category 'How to test' in sidebar 'guides'"
+  },
+  "sidebar.guides.category.How to mock": {
+    "message": "How to mock",
+    "description": "The label for category 'How to mock' in sidebar 'guides'"
+  },
+  "sidebar.guides.category.Testing libraries": {
+    "message": "Testing libraries",
+    "description": "The label for category 'Testing libraries' in sidebar 'guides'"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "title": {
+    "message": "ng-mocks",
+    "description": "The title in the navbar"
+  },
+  "item.label.Test examples": {
+    "message": "Test examples",
+    "description": "Navbar item with label Test examples"
+  },
+  "item.label.Try on CodeSandbox": {
+    "message": "Try on CodeSandbox",
+    "description": "Navbar item with label Try on CodeSandbox"
+  },
+  "item.label.Try on StackBlitz": {
+    "message": "Try on StackBlitz",
+    "description": "Navbar item with label Try on StackBlitz"
+  },
+  "item.label.Run tests on CI": {
+    "message": "Run tests on CI",
+    "description": "Navbar item with label Run tests on CI"
+  },
+  "item.label.GitHub repo": {
+    "message": "GitHub repo",
+    "description": "Navbar item with label GitHub repo"
+  },
+  "item.label.NPM package": {
+    "message": "NPM package",
+    "description": "Navbar item with label NPM package"
+  }
+}

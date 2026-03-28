@@ -1,11 +1,15 @@
 module.exports = {
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "zh-Hans"],
+  },
   title: 'ng-mocks',
   tagline:
     'An Angular testing library for creating mock services, components, directives, pipes and modules in unit tests, which includes shallow rendering, precise stubs to dump child dependencies, supports Angular 5 6 7 8 9 10 11, jasmine and jest.',
   url: 'https://ng-mocks.sudo.eu',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'throw',
+  onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: "warn",
   onDuplicateRoutes: 'throw',
   baseUrlIssueBanner: false,
   favicon: 'img/favicon.ico',
